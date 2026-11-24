@@ -4,6 +4,7 @@ import { notifications } from '@mantine/notifications';
 import { IconCloudOff, IconHistory } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 import * as api from '../api/endpoints.ts';
+import { LOCAL_MODE } from '../api/client.ts';
 import { useAuth } from '../context/AuthContext.tsx';
 import { HallSource, LoadOutcome, useHallStore } from '../hooks/useHallStore.ts';
 import { navigate, routeUrl } from '../hooks/useHashRoute.ts';
@@ -137,7 +138,7 @@ function EventPage({ id }: { id: string }) {
                 onBack={back}
                 onEditEvent={meta ? () => setIsEditOpen(true) : undefined}
                 share={
-                    meta?.shareToken
+                    meta?.shareToken && !LOCAL_MODE
                         ? {
                               coupleUrl: routeUrl(`/share/${meta.shareToken}`),
                               lookupUrl: routeUrl(`/find/${meta.lookupToken}`),

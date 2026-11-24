@@ -1,12 +1,15 @@
 import { EventRecord, EventSummary, HallData, Template, User, Venue } from '../types/types.ts';
 import { normalizeHall } from '../utils/validation.ts';
-import { ApiError, request } from './client.ts';
+import { ApiError, LOCAL_MODE, request } from './client.ts';
+import * as local from './local.ts';
 
 export interface Session {
     token: string;
     user: User;
     venue: Venue;
 }
+
+// In local mode (no backend) the functions below use localStorage instead — see local.ts.
 
 // ---- Auth & venue ------------------------------------------------------------------
 
@@ -21,7 +24,7 @@ export const logout = () => request<{ success: boolean }>('/api/auth/logout', { 
 export const fetchMe = (signal?: AbortSignal) => request<{ user: User; venue: Venue }>('/api/me', { signal });
 
 export const updateVenue = (patch: Partial<Omit<Venue, 'id'>>) =>
-    request<Venue>('/api/venue', { method: 'PUT', json: patch });
+    LOCAL_MODE ? local.updateVenue(patch) : request<Venue>('/api/venue', { method: 'PUT', json: patch });
 
 // ---- Events --------------------------------------------------------------------------
 
@@ -31,34 +34,46 @@ function normalizeEvent(raw: EventRecord): EventRecord {
     return { ...raw, hall };
 }
 
-export const listEvents = (signal?: AbortSignal) => request<EventSummary[]>('/api/events', { signal });
+export const listEvents = (signal?: AbortSignal) =>
+    LOCAL_MODE ? local.listEvents() : request<EventSummary[]>('/api/events', { signal });
 
 export const createEvent = (input: { title: string; date: string; hall?: HallData }) =>
-    request<EventRecord>('/api/events', { method: 'POST', json: input }).then(normalizeEvent);
+    LOCAL_MODE
+        ? local.createEvent(input)
+        : request<EventRecord>('/api/events', { method: 'POST', json: input }).then(normalizeEvent);
 
 export const fetchEvent = (id: string, signal?: AbortSignal) =>
-    request<EventRecord>(`/api/events/${encodeURIComponent(id)}`, { signal }).then(normalizeEvent);
+    LOCAL_MODE
+        ? local.fetchEvent(id)
+        : request<EventRecord>(`/api/events/${encodeURIComponent(id)}`, { signal }).then(normalizeEvent);
 
 export const saveEvent = (id: string, input: { hall?: HallData; title?: string; date?: string; version?: number; force?: boolean }) =>
-    request<{ version: number; updatedAt: string }>(`/api/events/${encodeURIComponent(id)}`, { method: 'PUT', json: input });
+    LOCAL_MODE
+        ? local.saveEvent(id, input)
+        : request<{ version: number; updatedAt: string }>(`/api/events/${encodeURIComponent(id)}`, { method: 'PUT', json: input });
 
 export const deleteEvent = (id: string) =>
-    request<{ success: boolean }>(`/api/events/${encodeURIComponent(id)}`, { method: 'DELETE' });
+    LOCAL_MODE
+        ? local.deleteEvent(id)
+        : request<{ success: boolean }>(`/api/events/${encodeURIComponent(id)}`, { method: 'DELETE' });
 
 export const rotateShareLink = (id: string) =>
     request<{ shareToken: string }>(`/api/events/${encodeURIComponent(id)}/share/rotate`, { method: 'POST' });
 
 // ---- Templates -----------------------------------------------------------------------
 
-export const listTemplates = (signal?: AbortSignal) => request<Template[]>('/api/templates', { signal });
+export const listTemplates = (signal?: AbortSignal) =>
+    LOCAL_MODE ? local.listTemplates() : request<Template[]>('/api/templates', { signal });
 
 export const createTemplate = (name: string, hall: Template['hall']) =>
-    request<Template>('/api/templates', { method: 'POST', json: { name, hall } });
+    LOCAL_MODE ? local.createTemplate(name, hall) : request<Template>('/api/templates', { method: 'POST', json: { name, hall } });
 
 export const deleteTemplate = (id: string) =>
-    request<{ success: boolean }>(`/api/templates/${encodeURIComponent(id)}`, { method: 'DELETE' });
+    LOCAL_MODE
+        ? local.deleteTemplate(id)
+        : request<{ success: boolean }>(`/api/templates/${encodeURIComponent(id)}`, { method: 'DELETE' });
 
-// ---- Couple share link (no login) ---------------------------------------------------
+// ---- Couple share link (no login, needs the backend) ----------------------------------
 
 export interface SharedEvent {
     title: string;
@@ -81,7 +96,7 @@ export const saveShared = (token: string, hall: HallData, version: number, force
         json: { hall, version, force },
     });
 
-// ---- Public "find your table" page (QR) ------------------------------------------
+// ---- Public "find your table" page (QR, needs the backend) ----------------------------
 
 export interface LookupInfo {
     title: string;

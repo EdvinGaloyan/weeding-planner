@@ -1,5 +1,6 @@
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { ApiError, getToken, onUnauthorized, setToken } from '../api/client.ts';
+import { ApiError, getToken, LOCAL_MODE, onUnauthorized, setToken } from '../api/client.ts';
+import { getVenue as getLocalVenue } from '../api/local.ts';
 import * as api from '../api/endpoints.ts';
 import { User, Venue } from '../types/types.ts';
 import { readJSON, removeKey, writeJSON } from '../utils/storage.ts';
@@ -27,7 +28,27 @@ const isCachedSession = (value: unknown): value is CachedSession =>
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+/** Local mode (no backend): always "signed in" as this browser's own venue. */
+function LocalAuthProvider({ children }: { children: ReactNode }) {
+    const [venue, setVenueState] = useState<Venue>(() => getLocalVenue());
+    const value = useMemo<AuthContextValue>(
+        () => ({
+            status: 'authenticated',
+            user: { id: 'local', email: '' },
+            venue,
+            login: async () => {},
+            register: async () => {},
+            logout: async () => {},
+            setVenue: setVenueState,
+        }),
+        [venue],
+    );
+    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+
+export const AuthProvider = LOCAL_MODE ? LocalAuthProvider : RemoteAuthProvider;
+
+function RemoteAuthProvider({ children }: { children: ReactNode }) {
     // The last known session lets the planner open even when the server is unreachable
     const [session, setSession] = useState<CachedSession | null>(() =>
         getToken() ? readJSON(SESSION_KEY, isCachedSession) : null,

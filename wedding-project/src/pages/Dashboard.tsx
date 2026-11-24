@@ -6,6 +6,7 @@ import {
     Button,
     Card,
     Container,
+    FileButton,
     Group,
     Image,
     Loader,
@@ -21,7 +22,10 @@ import { notifications } from '@mantine/notifications';
 import {
     IconCalendarEvent,
     IconCloudOff,
+    IconDatabaseExport,
     IconDots,
+    IconDownload,
+    IconUpload,
     IconHistory,
     IconLogout,
     IconPlus,
@@ -33,11 +37,13 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext.tsx';
 import * as api from '../api/endpoints.ts';
+import { LOCAL_MODE } from '../api/client.ts';
 import { EventSummary, HallData, Template } from '../types/types.ts';
 import { navigate } from '../hooks/useHashRoute.ts';
 import { defaultGroups } from '../utils/guests.ts';
 import { formatDate } from '../utils/labels.ts';
 import { readJSON, writeString, readString } from '../utils/storage.ts';
+import { downloadJson, exportBackup, importBackup, parseBackup } from '../utils/backup.ts';
 import { normalizeHall } from '../utils/validation.ts';
 import EventFormModal, { EventFormValues } from '../components/EventFormModal';
 import VenueSettingsModal from '../components/VenueSettingsModal';
@@ -130,6 +136,26 @@ function Dashboard() {
             },
         });
 
+    const handleExport = async () => {
+        try {
+            const backup = await exportBackup(venue);
+            downloadJson(backup, `wedding-planner-${new Date().toISOString().slice(0, 10)}.json`);
+        } catch {
+            notifications.show({ color: 'red', message: t('save_failed') });
+        }
+    };
+
+    const handleImport = async (file: File | null) => {
+        if (!file) return;
+        try {
+            const result = await importBackup(parseBackup(await file.text()));
+            notifications.show({ color: 'sage', message: t('backup_imported', result) });
+            load();
+        } catch {
+            notifications.show({ color: 'red', message: t('backup_invalid') });
+        }
+    };
+
     const deleteTemplate = (template: Template) =>
         modals.openConfirmModal({
             title: <Text className="modal-title">{t('delete_template_title')}</Text>,
@@ -189,8 +215,8 @@ function Dashboard() {
                 <Group gap="sm" wrap="nowrap">
                     {venue?.logo ? <Image src={venue.logo} h={40} w="auto" fit="contain" alt="" /> : <RingsWreath size={44} />}
                     <Stack gap={0}>
-                        <Text className="dashboard-venue">{venue?.name}</Text>
-                        <Text size="xs" c="dimmed">{user?.email}</Text>
+                        <Text className="dashboard-venue">{venue?.name || t('app_name')}</Text>
+                        <Text size="xs" c="dimmed">{LOCAL_MODE ? t('local_mode_hint') : user?.email}</Text>
                     </Stack>
                 </Group>
                 <Group gap="xs" wrap="nowrap">
@@ -201,9 +227,11 @@ function Dashboard() {
                     <ActionIcon variant="subtle" color="gold.2" size="lg" onClick={() => setIsSettingsOpen(true)} hiddenFrom="sm" aria-label={t('venue_settings')}>
                         <IconSettings size={18} />
                     </ActionIcon>
-                    <ActionIcon variant="subtle" color="gold.2" size="lg" onClick={logout} aria-label={t('logout')} title={t('logout')}>
-                        <IconLogout size={18} />
-                    </ActionIcon>
+                    {!LOCAL_MODE && (
+                        <ActionIcon variant="subtle" color="gold.2" size="lg" onClick={logout} aria-label={t('logout')} title={t('logout')}>
+                            <IconLogout size={18} />
+                        </ActionIcon>
+                    )}
                 </Group>
             </header>
 
@@ -303,6 +331,26 @@ function Dashboard() {
                                 ))}
                             </Group>
                         )}
+                    </Stack>
+
+                    <Stack gap="sm">
+                        <Group gap={8}>
+                            <IconDatabaseExport size={18} color="var(--gold)" />
+                            <Text fw={700} size="lg" className="dashboard-section">{t('backup_title')}</Text>
+                        </Group>
+                        <Text size="sm" c="dimmed">{t(LOCAL_MODE ? 'backup_hint_local' : 'backup_hint')}</Text>
+                        <Group gap="xs">
+                            <Button variant="light" color="gold" leftSection={<IconDownload size={16} />} onClick={handleExport} disabled={offline}>
+                                {t('backup_export')}
+                            </Button>
+                            <FileButton accept="application/json,.json" onChange={handleImport}>
+                                {props => (
+                                    <Button {...props} variant="subtle" color="gold" leftSection={<IconUpload size={16} />} disabled={offline}>
+                                        {t('backup_import')}
+                                    </Button>
+                                )}
+                            </FileButton>
+                        </Group>
                     </Stack>
                 </Stack>
             </Container>

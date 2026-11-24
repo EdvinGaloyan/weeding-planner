@@ -8,6 +8,8 @@ import Dashboard from './pages/Dashboard';
 import EventPage from './pages/EventPage';
 import SharePage from './pages/SharePage';
 import LookupPage from './pages/LookupPage';
+import { NotFound } from './pages/EventPage';
+import { LOCAL_MODE } from './api/client.ts';
 
 function App() {
     const route = useHashRoute();
@@ -19,6 +21,8 @@ function App() {
     }, [auth.status, route.name]);
 
     // Public pages: no account needed
+    // Couple link & QR page need the backend; in local mode the data never leaves this browser
+    if ((route.name === 'share' || route.name === 'find') && LOCAL_MODE) return <NotFound />;
     if (route.name === 'share') return <SharePage key={route.token} token={route.token} />;
     if (route.name === 'find') return <LookupPage key={route.token} token={route.token} />;
 

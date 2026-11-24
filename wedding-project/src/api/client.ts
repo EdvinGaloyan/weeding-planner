@@ -3,6 +3,13 @@ import { readString, removeKey, writeString } from '../utils/storage.ts';
 // Override with VITE_API_URL in an .env file when the backend runs elsewhere
 export const API_URL: string = import.meta.env.VITE_API_URL ?? 'http://localhost:5000';
 
+/**
+ * Local mode = no backend: data lives in this browser's localStorage.
+ * On by default for production builds without VITE_API_URL (e.g. Vercel), or forced with VITE_STORAGE=local.
+ */
+export const LOCAL_MODE: boolean =
+    import.meta.env.VITE_STORAGE === 'local' || (!import.meta.env.DEV && !import.meta.env.VITE_API_URL);
+
 const TOKEN_KEY = 'auth-token';
 
 /** offline | unauthorized | conflict | not-found | invalid | HTTP <status> */

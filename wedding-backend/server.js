@@ -22,8 +22,15 @@ const DB_FILE = path.join(DATA_DIR, 'db.json');
 const LEGACY_FILE = process.env.LEGACY_FILE ?? path.join(__dirname, 'hall_data.json');
 const SESSION_DAYS = 30;
 
-app.use(cors());
+// Behind Railway/Render's proxy: use the real client IP (rate limiting) and https info
+app.set('trust proxy', 1);
+// In production the frontend is served by this same server, so CORS is only needed for local dev.
+// CORS_ORIGIN can list extra allowed origins (comma separated).
+const corsOrigins = (process.env.CORS_ORIGIN || '').split(',').map(s => s.trim()).filter(Boolean);
+app.use(cors(corsOrigins.length ? { origin: corsOrigins } : undefined));
 app.use(express.json({ limit: '3mb' })); // big weddings + a logo exceed the 100kb default
+
+app.get('/api/health', (req, res) => res.json({ ok: true }));
 
 // ---------------------------------------------------------------------------
 // Tiny JSON database
@@ -460,6 +467,18 @@ async function importLegacyHall(venueId) {
     });
     console.log(`Imported the previous hall (${tables.length} tables, ${guests.length} guests)`);
 }
+
+// ---------------------------------------------------------------------------
+// Frontend: the built app (wedding-project/dist) is served from the same origin
+// ---------------------------------------------------------------------------
+
+const FRONTEND_DIR = process.env.FRONTEND_DIR || path.join(__dirname, '..', 'wedding-project', 'dist');
+app.use('/api', (req, res) => res.status(404).json({ code: 'not-found' }));
+app.use(express.static(FRONTEND_DIR, { index: 'index.html', maxAge: '1h' }));
+app.use((req, res, next) => {
+    if (req.method !== 'GET') return next();
+    res.sendFile(path.join(FRONTEND_DIR, 'index.html'), error => error && next());
+});
 
 loadDb().then(() => {
     app.listen(PORT, () => console.log(`Backend server is running on http://localhost:${PORT}`));

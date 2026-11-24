@@ -310,5 +310,13 @@
   "section_language": "Language",
   "section_danger": "Danger zone",
   "click_to_save": "click to save",
-  "btn_save_template_short": "Save template"
+  "btn_save_template_short": "Save template",
+  "local_mode_hint": "Data is stored in this browser",
+  "backup_title": "Backup",
+  "backup_hint": "Download all weddings and templates as one file, or import them from a file.",
+  "backup_hint_local": "Data is stored only in this browser. Download a backup regularly so nothing is lost, and import it on another computer.",
+  "backup_export": "Download backup",
+  "backup_import": "Import from file",
+  "backup_imported": "Imported {{events}} weddings and {{templates}} templates",
+  "backup_invalid": "The file is not a backup or is damaged"
 }
