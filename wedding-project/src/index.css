@@ -1,0 +1,27 @@
+:root {
+  --ivory: #fffaf2;
+  --champagne: #f3e6cc;
+  --gold: #b8873b;
+  --gold-light: #ecd29b;
+  --blush: #e493a7;
+  --wine: #4a1f2b;
+  --cocoa: #2f2224;
+  --cocoa-light: #7a6560;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background: var(--ivory);
+  color: var(--cocoa);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

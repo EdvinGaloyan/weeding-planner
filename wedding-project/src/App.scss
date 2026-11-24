@@ -1,0 +1,1794 @@
+/* ========================================
+   WEDDING SEATING PLANNER - Velvet Wine, Antique Gold & Rosewood
+   Components come from Mantine; this file styles the
+   custom canvas (hall, tables, chairs) and the dark sidebar.
+   ======================================== */
+
+$ivory: #fffaf2;
+$champagne: #f3e6cc;
+$gold: #b8873b;
+$gold-deep: #9c6f2a;
+$gold-bright: #d9b26a;
+$gold-light: #ecd29b;
+$gold-pale: #f1e4c8;
+$rose: #b24f66;
+$rose-light: #efb8c5;
+$wine: #4a1f2b;
+$wine-deep: #2b141b;
+$cocoa: #2f2224;
+$cocoa-light: #7a6560;
+$sidebar-text: #f7ecdf;
+$sidebar-dim: #dfe3d2;
+
+$serif: 'Cormorant Garamond', 'Noto Serif Armenian', Georgia, serif;
+$sidebar-width: 330px;
+$ease-luxe: cubic-bezier(0.16, 1, 0.3, 1);
+
+// ---------- Layout ----------
+.app-container {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: #364a3d;
+}
+
+// ---------- Sidebar (dark velvet) ----------
+.sidebar {
+  position: relative;
+  z-index: 20;
+  width: $sidebar-width;
+  height: 100vh;
+  flex-shrink: 0;
+  color: $sidebar-text;
+  background:
+    radial-gradient(130% 32% at 50% 0%, rgba($gold-bright, 0.28) 0%, transparent 70%),
+    radial-gradient(90% 40% at 0% 100%, rgba(#9caf88, 0.25) 0%, transparent 70%),
+    linear-gradient(180deg, #55705c 0%, #435a4a 55%, #364a3d 100%);
+  border-right: 1px solid rgba($gold-bright, 0.45);
+  box-shadow: inset -6px 0 0 -5px rgba($gold-bright, 0.25), 10px 0 40px rgba($wine-deep, 0.45);
+  transition: transform 0.35s $ease-luxe, margin-left 0s linear 0s;
+  will-change: transform;
+
+  // Re-skin Mantine components for the dark surface
+  --mantine-color-text: #{$sidebar-text};
+  --mantine-color-dimmed: #{$sidebar-dim};
+  --mantine-color-body: #{rgba(#fff, 0.05)};
+  --mantine-color-default: #{rgba(#fff, 0.06)};
+  --mantine-color-default-hover: #{rgba(#fff, 0.12)};
+  --mantine-color-default-color: #{$sidebar-text};
+  --mantine-color-default-border: #{rgba($gold-bright, 0.35)};
+  --mantine-color-placeholder: #{rgba($sidebar-text, 0.45)};
+
+  .sidebar-closed & {
+    margin-left: -$sidebar-width;
+    transform: translateX(-100%);
+    transition: transform 0.35s $ease-luxe, margin-left 0s linear 0.35s;
+  }
+
+  .mantine-InputWrapper-label {
+    color: #ecdcc9;
+  }
+
+  .mantine-Input-input {
+    background: rgba(#fff, 0.06);
+    border-color: rgba($gold-bright, 0.35);
+    color: $sidebar-text;
+
+    &:focus,
+    &:focus-within {
+      border-color: $gold-bright;
+    }
+
+    &:disabled {
+      background: rgba(#fff, 0.03);
+      color: rgba($sidebar-text, 0.4);
+    }
+  }
+
+  .mantine-NumberInput-control {
+    color: $gold-light;
+    border-color: rgba($gold-bright, 0.3);
+
+    &:hover {
+      background: rgba($gold-bright, 0.15);
+    }
+  }
+
+  .mantine-SegmentedControl-root {
+    background: rgba(#000, 0.28);
+    border: 1px solid rgba($gold-bright, 0.25);
+  }
+
+  .mantine-SegmentedControl-indicator {
+    background: linear-gradient(135deg, $gold-light 0%, $gold-bright 100%);
+  }
+
+  .mantine-SegmentedControl-label {
+    color: $sidebar-dim;
+
+    &[data-active] {
+      color: $wine-deep;
+    }
+  }
+
+  .mantine-Switch-track {
+    background: rgba(#fff, 0.12);
+    border-color: rgba($gold-bright, 0.4);
+  }
+
+  .mantine-Switch-input:checked + .mantine-Switch-track {
+    background: $gold;
+    border-color: $gold-bright;
+  }
+
+  // Disabled buttons: muted instead of Mantine's light-grey block
+  .mantine-Button-root:disabled,
+  .mantine-Button-root[data-disabled] {
+    background: rgba(#fff, 0.04);
+    border-color: transparent;
+    color: rgba($sidebar-text, 0.35);
+  }
+
+  .sidebar-title {
+    font-family: $serif;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: 0.3px;
+    background: linear-gradient(180deg, #fbeccb 0%, $gold-bright 70%, $gold 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 2px 18px rgba($gold-bright, 0.25);
+  }
+
+  .sidebar-flourish {
+    margin-top: 6px;
+  }
+
+  .sidebar-divider {
+    border-color: rgba($gold-bright, 0.22);
+  }
+
+  .stats-card {
+    background: linear-gradient(135deg, rgba(#fff, 0.09) 0%, rgba(#fff, 0.03) 100%);
+    border: 1px solid rgba($gold-bright, 0.35);
+    box-shadow: inset 0 1px 0 rgba(#fff, 0.08), 0 10px 24px rgba(#000, 0.25);
+  }
+
+  .stat-value {
+    font-family: $serif;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.1;
+    color: $gold-light;
+  }
+
+  .smart-card {
+    border: 1px solid rgba($rose-light, 0.4);
+    background:
+      radial-gradient(120% 120% at 100% 0%, rgba($rose, 0.45) 0%, transparent 65%),
+      linear-gradient(135deg, rgba(#fff, 0.08) 0%, rgba(#fff, 0.02) 100%);
+    box-shadow: 0 10px 24px rgba(#000, 0.25);
+  }
+
+  .head-toggle {
+    background: rgba(#fff, 0.05);
+    border-color: rgba($gold-bright, 0.3);
+
+    &.active {
+      background: linear-gradient(135deg, rgba($gold-bright, 0.25) 0%, rgba($gold, 0.12) 100%);
+      border-color: $gold-bright;
+      box-shadow: 0 6px 18px rgba($gold, 0.25);
+    }
+  }
+
+  .shape-option {
+    background: rgba(#fff, 0.05);
+    border-color: rgba($gold-bright, 0.3);
+    color: $sidebar-dim;
+
+    &:hover:not(:disabled) {
+      border-color: $gold-bright;
+    }
+
+    &.selected {
+      color: $gold-light;
+      border-color: $gold-bright;
+      background: rgba($gold-bright, 0.15);
+      box-shadow: 0 0 0 3px rgba($gold-bright, 0.18);
+    }
+  }
+
+  .bg-preset {
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 2px solid rgba(#fff, 0.9);
+    box-shadow: 0 0 0 1px rgba($gold-bright, 0.4), 0 4px 10px rgba(#000, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+
+    &.photo {
+      background: url('assets/hall-floor.svg') center / 300% auto;
+      color: $gold-deep;
+    }
+
+    &:hover {
+      transform: scale(1.08);
+    }
+
+    &.selected {
+      box-shadow: 0 0 0 3px $gold-bright, 0 6px 14px rgba($gold-bright, 0.45);
+    }
+  }
+
+  .save-btn {
+    box-shadow: 0 10px 24px rgba(#000, 0.3);
+  }
+
+  .unsaved-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(#fff, 0.35);
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+
+  .save-status {
+    color: $sidebar-dim;
+
+    &.dirty { color: #f4a9bb; }
+    &.offline { color: #ff9b8a; }
+    &.saved { color: #b9d79f; }
+  }
+}
+
+// ---------- Shared option cards (light version, used in the planner modal) ----------
+.head-toggle {
+  border: 1px solid $gold-pale;
+  background: #fff;
+  transition: all 0.3s $ease-luxe;
+
+  &.active {
+    border-color: $gold-bright;
+    background: linear-gradient(135deg, #fff8e8 0%, #f8e7c2 100%);
+    box-shadow: 0 6px 16px rgba($gold, 0.22);
+  }
+}
+
+.shape-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 70px;
+  padding: 10px 6px;
+  border-radius: 12px;
+  border: 1px solid $gold-pale;
+  background: #fff;
+  color: $cocoa-light;
+  transition: all 0.25s $ease-luxe;
+
+  &:hover:not(:disabled) {
+    border-color: $gold-bright;
+    transform: translateY(-1px);
+  }
+
+  &.selected {
+    color: $gold-deep;
+    border-color: $gold;
+    background: #fff6e3;
+    box-shadow: 0 0 0 3px rgba($gold, 0.18);
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}
+
+// ---------- Planner preview ----------
+.plan-preview {
+  border: 1px solid rgba($gold-bright, 0.6);
+  background:
+    radial-gradient(120% 120% at 100% 0%, rgba($rose-light, 0.35) 0%, transparent 60%),
+    linear-gradient(135deg, #fffaf0 0%, #f8ebd2 100%);
+
+  .plan-preview-count {
+    font-family: $serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: $wine;
+    line-height: 1;
+  }
+
+  .plan-dots {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+  }
+
+  .plan-dot {
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #fff 0%, #fff6e3 45%, $gold-light 100%);
+    border: 2px solid $gold;
+    box-shadow: 0 0 0 3px rgba($rose, 0.18);
+    animation: elegantPopIn 0.4s $ease-luxe both;
+  }
+}
+
+// ---------- Sidebar toggle ----------
+.sidebar-toggle-btn {
+  position: absolute !important;
+  top: 18px;
+  left: calc(#{$sidebar-width} + 14px);
+  z-index: 30;
+  background: linear-gradient(135deg, #55705c 0%, #435a4a 100%) !important;
+  border-color: rgba($gold-bright, 0.6) !important;
+  color: $gold-light !important;
+  box-shadow: 0 6px 18px rgba($wine-deep, 0.35);
+  transition: left 0.35s $ease-luxe, color 0.2s;
+
+  &:hover {
+    color: #fff !important;
+  }
+
+  .sidebar-closed & {
+    left: 14px;
+  }
+}
+
+// ---------- Hall ----------
+.hall-area {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  display: flex;
+}
+
+.hall-viewport {
+  flex: 1;
+  position: relative;
+  overflow: auto;
+  background: url('assets/hall-floor.svg') center / cover no-repeat;
+  box-shadow: inset 0 0 120px rgba($wine-deep, 0.22); // warm vignette so the tables stand out
+}
+
+.hall-sizer {
+  position: relative;
+}
+
+.hall {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+
+  // Smoothly glide tables into place during auto-arrange
+  &.arranging .table-wrapper {
+    transition: transform 0.8s $ease-luxe, width 0.8s $ease-luxe, height 0.8s $ease-luxe, filter 0.3s ease;
+  }
+}
+
+.hall-toolbar {
+  position: absolute !important;
+  top: 14px;
+  right: 16px;
+  z-index: 40;
+  background: rgba(#fffaf2, 0.94) !important;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba($gold-bright, 0.7);
+  box-shadow: 0 10px 28px rgba($wine-deep, 0.25);
+
+  .toolbar-sep {
+    width: 1px;
+    height: 22px;
+    margin: 0 4px;
+    background: rgba($gold-bright, 0.6);
+  }
+
+  .zoom-value {
+    min-width: 48px;
+    border: 0;
+    background: none;
+    font: 700 12px/1 inherit;
+    color: $wine;
+    cursor: pointer;
+    font-family: inherit;
+  }
+}
+.hall-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+
+  .hall-empty-card {
+    background: rgba(#fffaf2, 0.9);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba($gold-bright, 0.7);
+    box-shadow: 0 24px 60px rgba($wine-deep, 0.25);
+    animation: elegantPopIn 0.6s $ease-luxe both;
+  }
+
+  .hall-empty-title {
+    font-family: $serif;
+    font-size: 30px;
+    font-weight: 700;
+    color: $wine;
+  }
+}
+
+// ---------- Tables ----------
+.table-wrapper {
+  position: absolute;
+  z-index: 2;
+  will-change: transform;
+  filter: drop-shadow(0 12px 20px rgba($wine-deep, 0.3)) drop-shadow(0 2px 4px rgba($wine-deep, 0.2));
+  transition: filter 0.3s ease;
+
+  &:hover {
+    z-index: 10;
+    filter: drop-shadow(0 22px 36px rgba($wine-deep, 0.38)) drop-shadow(0 2px 4px rgba($wine-deep, 0.2));
+  }
+
+  &.dragging {
+    z-index: 11;
+    cursor: grabbing;
+    filter: drop-shadow(0 30px 50px rgba($wine-deep, 0.45));
+  }
+
+  .rotatable-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-origin: center center;
+  }
+
+  .table-item {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    cursor: grab;
+    // Crisp white linen with an antique-gold rim
+    background: radial-gradient(circle at 32% 26%, #fff 0%, #fffdf8 50%, #f7ecd8 100%);
+    border: 2.5px solid $gold;
+    box-shadow: inset 0 0 0 4px #fff, inset 0 0 18px rgba($gold, 0.18);
+
+    // Inner gold hairline, like the edge of a charger plate
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 8px;
+      border: 1px solid rgba($gold, 0.5);
+      border-radius: inherit;
+      pointer-events: none;
+    }
+
+    &.round { border-radius: 50%; }
+    &.rect  { border-radius: 14px; }
+
+    &.head {
+      border-radius: 14px;
+      background: linear-gradient(135deg, #fff6df 0%, #f5dfae 55%, #e6c27c 100%);
+      border: 2.5px solid $gold-deep;
+      box-shadow: inset 0 0 0 4px rgba(#fff, 0.7), inset 0 0 22px rgba($gold-deep, 0.25);
+
+      &::after {
+        border-color: rgba($gold-deep, 0.6);
+        border-style: dashed;
+      }
+    }
+  }
+
+  &.head-table-wrapper {
+    filter: drop-shadow(0 16px 30px rgba($gold-deep, 0.5)) drop-shadow(0 2px 4px rgba($wine-deep, 0.25));
+  }
+
+  .table-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 2px;
+    user-select: none;
+    transition: transform 0.3s $ease-luxe;
+  }
+
+  .table-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .head-crown {
+    flex-shrink: 0;
+    color: $gold-deep;
+  }
+
+  .table-name {
+    font-family: $serif;
+    font-weight: 700;
+    color: $wine;
+    line-height: 1.05;
+    overflow-wrap: break-word;
+    cursor: text;
+    padding: 0 4px;
+    border-radius: 6px;
+    transition: background 0.2s;
+
+    &:hover {
+      background: rgba($gold-light, 0.4);
+    }
+  }
+
+  .table-meta {
+    color: $gold-deep;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  .table-animation {
+    animation: elegantPopIn 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+  }
+}
+
+// ---------- Floating toolbar under each table ----------
+.action-bar {
+  position: absolute;
+  top: calc(100% + 32px);
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 6px;
+  background: rgba(#fff, 0.97);
+  border: 1px solid rgba($gold-bright, 0.7);
+  border-radius: 999px;
+  box-shadow: 0 12px 28px rgba($wine-deep, 0.28);
+  backdrop-filter: blur(6px);
+  z-index: 30;
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, -6px);
+  transition: all 0.35s $ease-luxe;
+
+  .table-wrapper:hover & {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0);
+  }
+
+  .action-sep {
+    width: 1px;
+    height: 18px;
+    margin: 0 3px;
+    background: rgba($gold-bright, 0.5);
+  }
+}
+
+// ---------- Chairs ----------
+.chair {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  // Gold velvet chair cushion
+  background: radial-gradient(circle at 35% 30%, #fff6dc 0%, $gold-bright 55%, $gold-deep 100%);
+  border: 1.5px solid #fff;
+  box-shadow: 0 0 0 1px rgba($gold-deep, 0.6), 0 3px 8px rgba($wine-deep, 0.35);
+  transition: transform 0.25s $ease-luxe, box-shadow 0.25s;
+
+  &:hover {
+    transform: scale(1.35);
+    box-shadow: 0 0 0 1px rgba($gold-deep, 0.8), 0 6px 14px rgba($wine-deep, 0.4);
+  }
+
+  // Occupied: rosewood velvet
+  &.has-guest {
+    background: radial-gradient(circle at 35% 30%, #f6c6d1 0%, $rose 55%, #7d2c40 100%);
+    box-shadow: 0 0 0 1px rgba(#7d2c40, 0.7), 0 3px 8px rgba($wine-deep, 0.35);
+  }
+
+  .chair-initial {
+    font-size: 10px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+    user-select: none;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  }
+
+  // Bride & groom seats on the head table
+  &.couple {
+    box-shadow: 0 0 0 2px $gold-bright, 0 3px 8px rgba($wine-deep, 0.35);
+  }
+}
+
+// ---------- Enlarged table view (double-click) ----------
+.detail-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.detail-canvas {
+  position: relative;
+  margin: 0 auto;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(#fff, 0.85) 0%, transparent 70%),
+    url('assets/hall-floor.svg') center / cover;
+  box-shadow: inset 0 0 0 1px rgba($gold-bright, 0.5), inset 0 0 60px rgba($wine-deep, 0.12);
+}
+
+.detail-origin {
+  position: absolute;
+}
+
+.detail-table {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 32% 26%, #fff 0%, #fffdf8 50%, #f7ecd8 100%);
+  border: 3px solid $gold;
+  box-shadow: inset 0 0 0 6px #fff, inset 0 0 28px rgba($gold, 0.2), 0 18px 40px rgba($wine-deep, 0.25);
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 12px;
+    border: 1px solid rgba($gold, 0.5);
+    border-radius: inherit;
+  }
+
+  &.round { border-radius: 50%; }
+  &.rect  { border-radius: 18px; }
+
+  &.head {
+    border-radius: 18px;
+    background: linear-gradient(135deg, #fff6df 0%, #f5dfae 55%, #e6c27c 100%);
+    border-color: $gold-deep;
+
+    &::after { border-style: dashed; border-color: rgba($gold-deep, 0.6); }
+  }
+}
+
+.detail-table-label {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 80%;
+  font-family: $serif;
+  font-size: 30px;
+  font-weight: 700;
+  color: $wine;
+  text-align: center;
+  line-height: 1.1;
+
+  svg { color: $gold-deep; flex-shrink: 0; }
+}
+
+.detail-chair {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  color: $wine-deep;
+  background: radial-gradient(circle at 35% 30%, #fff6dc 0%, $gold-bright 55%, $gold-deep 100%);
+  box-shadow: 0 0 0 1px rgba($gold-deep, 0.6), 0 4px 10px rgba($wine-deep, 0.3);
+  transition: transform 0.2s $ease-luxe;
+
+  &:hover { transform: scale(1.15); }
+
+  &.has-guest {
+    color: #fff;
+    background: radial-gradient(circle at 35% 30%, #f6c6d1 0%, $rose 55%, #7d2c40 100%);
+    box-shadow: 0 0 0 1px rgba(#7d2c40, 0.7), 0 4px 10px rgba($wine-deep, 0.3);
+  }
+
+  &.couple {
+    box-shadow: 0 0 0 3px $gold-bright, 0 0 0 6px rgba($rose, 0.3), 0 4px 10px rgba($wine-deep, 0.3);
+  }
+}
+
+.detail-label {
+  position: absolute;
+  width: max-content; // otherwise labels near the right edge shrink to one letter per line
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 4px 8px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: rgba(#fff, 0.85);
+  box-shadow: 0 2px 8px rgba($wine-deep, 0.1);
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.2s, background 0.2s;
+
+  &:hover {
+    border-color: $gold-bright;
+    background: #fff;
+  }
+
+  .detail-name {
+    font-family: $serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: $wine;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+  }
+
+  &.empty .detail-name {
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    font-style: italic;
+    color: $cocoa-light;
+  }
+
+  .detail-role {
+    align-self: inherit;
+    padding: 1px 8px;
+    border-radius: 999px;
+    background: $wine;
+    color: $gold-light;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+
+    &.couple {
+      background: linear-gradient(135deg, $rose 0%, #7d2c40 100%);
+      color: #fff;
+    }
+  }
+}
+
+// ---------- Modals ----------
+.modal-title {
+  font-family: $serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: $wine;
+  line-height: 1.1;
+}
+
+.modal-flourish {
+  align-self: center;
+  margin-top: -6px;
+}
+
+// ---------- Animation ----------
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+@keyframes elegantPopIn {
+  0% { opacity: 0; transform: scale(0.85); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+// ======================================================================
+//  Guests, hall elements, pages, print — added with the multi-event version
+// ======================================================================
+
+// ---------- Chairs: groups, drag & drop, search ----------
+.chair {
+  &.grouped {
+    background: radial-gradient(circle at 35% 30%, rgba(#fff, 0.75) 0%, var(--chair-color) 45%, color-mix(in srgb, var(--chair-color) 70%, #000) 100%);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--chair-color) 60%, #000), 0 3px 8px rgba($wine-deep, 0.35);
+  }
+
+  &.drop-over {
+    transform: scale(1.6);
+    box-shadow: 0 0 0 3px $rose, 0 0 0 7px rgba($rose, 0.25);
+  }
+
+  &.match {
+    z-index: 6;
+    animation: chairPulse 1.2s ease-in-out infinite;
+  }
+
+  &[draggable='true'] {
+    cursor: grab;
+  }
+
+  .dragging-guest &:not(.has-guest) {
+    box-shadow: 0 0 0 2px rgba($rose, 0.7), 0 0 0 5px rgba($rose, 0.18);
+  }
+}
+
+@keyframes chairPulse {
+  0%, 100% { box-shadow: 0 0 0 2px #fff, 0 0 0 5px $rose; transform: scale(1.3); }
+  50% { box-shadow: 0 0 0 2px #fff, 0 0 0 10px rgba($rose, 0.25); transform: scale(1.5); }
+}
+
+.table-wrapper {
+  .table-item.drop-over {
+    box-shadow: inset 0 0 0 4px #fff, 0 0 0 4px rgba($rose, 0.55), 0 0 30px rgba($rose, 0.45);
+  }
+
+  &.read-only .table-item {
+    cursor: default;
+  }
+}
+
+// ---------- Hall elements (stage, dance floor…) ----------
+.hall-element-wrapper {
+  position: absolute;
+  z-index: 1;
+  cursor: grab;
+
+  &.read-only { cursor: default; }
+  &.dragging { cursor: grabbing; z-index: 11; }
+  // No z-index jump on hover: a big element (stage) must never cover the small ones placed on it (DJ)
+
+  .element-bar {
+    top: calc(100% + 10px);
+
+    // Invisible bridge over the gap, so moving the mouse to the toolbar doesn't lose the hover
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: -12px;
+      height: 12px;
+    }
+  }
+
+  &:hover .element-bar {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0);
+  }
+}
+
+.hall-element {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  border: 2px solid rgba($wine, 0.45);
+  background: rgba(#fffaf2, 0.82);
+  color: $wine;
+  box-shadow: 0 10px 26px rgba($wine-deep, 0.2);
+  transition: transform 0.3s $ease-luxe;
+  user-select: none;
+
+  &.shape-round { border-radius: 50%; }
+  &.shape-parallelogram { border-radius: 8px; }
+
+  // Drag handles to stretch width / height freely
+  .resize-handle {
+    position: absolute;
+    z-index: 3;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid $gold;
+    box-shadow: 0 2px 6px rgba($wine-deep, 0.3);
+    opacity: 0;
+    transition: opacity 0.2s;
+    touch-action: none;
+
+    &.handle-e { top: 50%; right: -7px; margin-top: -6px; cursor: ew-resize; }
+    &.handle-s { left: 50%; bottom: -7px; margin-left: -6px; cursor: ns-resize; }
+    &.handle-se { right: -7px; bottom: -7px; cursor: nwse-resize; border-radius: 3px; }
+  }
+
+  .hall-element-wrapper:hover &,
+  .hall-element-wrapper.resizing & {
+    .resize-handle { opacity: 1; }
+  }
+
+  .hall-element-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    text-align: center;
+    font-family: $serif;
+    font-weight: 700;
+    line-height: 1.05;
+    padding: 4px;
+  }
+
+  &.kind-stage {
+    background: linear-gradient(180deg, #6d2b3b 0%, $wine 100%);
+    border-color: $gold-bright;
+    color: $gold-light;
+  }
+
+  &.kind-dance {
+    border-color: $gold;
+    color: $wine-deep;
+    background:
+      repeating-linear-gradient(45deg, rgba(#fff, 0.18) 0 14px, transparent 14px 28px),
+      repeating-linear-gradient(-45deg, rgba($gold-deep, 0.18) 0 14px, transparent 14px 28px),
+      linear-gradient(135deg, #e9c98f 0%, #c9995a 100%);
+  }
+
+  &.kind-dj { background: linear-gradient(135deg, #3a2a30 0%, #1e1418 100%); color: $gold-light; border-color: $gold; }
+  &.kind-entrance { background: rgba(#fff, 0.9); border-style: dashed; color: $gold-deep; }
+  &.kind-bar { background: linear-gradient(135deg, #7a4a2f 0%, #5a3320 100%); color: #f7e3c4; border-color: #3d2014; }
+  &.kind-cake { background: radial-gradient(circle, #fff 0%, #fde8ee 100%); border-color: $rose-light; color: $rose; }
+  &.kind-photo { background: linear-gradient(135deg, #fff 0%, #efe4f6 100%); border-color: #b9a2cf; color: #6b4c9a; }
+  &.kind-buffet { background: linear-gradient(135deg, #fffaf0 0%, #eef2e4 100%); border-color: #9caf88; color: #4f6a3c; }
+  &.kind-column {
+    background: radial-gradient(circle at 35% 30%, #fff 0%, #e9e1d4 60%, #b9ab95 100%);
+    border-color: #a89880;
+  }
+}
+
+.sidebar .element-option {
+  min-height: 62px;
+  padding: 8px 4px;
+}
+
+// ---------- Guest panel ----------
+.guest-panel {
+  position: relative;
+  z-index: 25;
+  width: 340px;
+  flex-shrink: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #fffaf2;
+  border-left: 1px solid rgba($gold-bright, 0.6);
+  box-shadow: -10px 0 40px rgba($wine-deep, 0.25);
+  transition: transform 0.35s $ease-luxe, margin-right 0s linear 0s, visibility 0s 0s;
+  will-change: transform;
+
+  &.closed {
+    margin-right: -340px;
+    transform: translateX(100%);
+    visibility: hidden;
+    transition: transform 0.35s $ease-luxe, margin-right 0s linear 0.35s, visibility 0s 0.35s;
+  }
+
+  .guest-panel-header {
+    padding: 16px 16px 10px;
+    color: $wine;
+  }
+
+  .guest-panel-title {
+    font-family: $serif;
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .guest-stat {
+    text-align: center;
+    padding: 6px 4px;
+    border-radius: 12px;
+    border: 1px solid $gold-pale;
+    background: #fff;
+
+    &.gold .guest-stat-value { color: $gold-deep; }
+    &.sage .guest-stat-value { color: #5f7a4a; }
+    &.blush .guest-stat-value { color: $rose; }
+  }
+
+  .guest-stat-value {
+    font-family: $serif;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  .guest-tabs {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .guest-tab-panel {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+
+    &[style*='display: none'] { display: none !important; }
+  }
+
+  .guest-list {
+    flex: 1;
+    min-height: 0;
+  }
+}
+
+@keyframes panelIn {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.guest-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px 7px 4px;
+  border-radius: 10px;
+  border: 1px solid $gold-pale;
+  background: #fff;
+  cursor: grab;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+
+  &:hover {
+    border-color: $gold-bright;
+    box-shadow: 0 4px 12px rgba($wine-deep, 0.1);
+  }
+
+  &:active { cursor: grabbing; }
+
+  &.unseated {
+    border-left: 3px solid $rose-light;
+  }
+
+  .guest-grip { color: #c9b9a4; flex-shrink: 0; }
+
+  .guest-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid;
+    flex-shrink: 0;
+  }
+
+  .guest-main {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .guest-name { color: $cocoa; }
+
+  .guest-table-badge {
+    max-width: 120px;
+    text-transform: none;
+  }
+}
+
+.meal-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.group-chip {
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--chip-color);
+  border: 1px solid color-mix(in srgb, var(--chip-color) 45%, transparent);
+  background: color-mix(in srgb, var(--chip-color) 8%, #fff);
+  transition: all 0.2s;
+
+  &.active {
+    color: #fff;
+    background: var(--chip-color);
+  }
+}
+
+.detail-label .detail-note {
+  font-size: 11px;
+  font-style: italic;
+  color: $cocoa-light;
+}
+
+// ---------- Responsive ----------
+.sidebar-backdrop { display: none; }
+
+@media (max-width: 900px) {
+  .sidebar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 50;
+    width: min(#{$sidebar-width}, calc(100vw - 48px));
+  }
+
+  .sidebar-closed .sidebar {
+    margin-left: calc(-1 * min(#{$sidebar-width}, calc(100vw - 48px)));
+  }
+
+  .sidebar-open .sidebar-backdrop {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 45;
+    background: rgba($wine-deep, 0.45);
+  }
+
+  .sidebar-toggle-btn {
+    left: 14px;
+    z-index: 55;
+
+    .sidebar-open & { left: calc(min(#{$sidebar-width}, calc(100vw - 48px)) + 6px); }
+  }
+
+  .guest-panel {
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 48;
+    width: min(360px, 100vw);
+  }
+
+  .hall-toolbar {
+    top: auto !important;
+    bottom: 14px;
+    right: 50% !important;
+    transform: translateX(50%);
+    max-width: calc(100vw - 20px);
+    overflow-x: auto;
+
+    .toolbar-label { display: none; }
+  }
+}
+
+// ---------- Auth & public pages ----------
+.auth-page,
+.lookup-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  background:
+    radial-gradient(80% 50% at 50% 0%, rgba($gold-bright, 0.35) 0%, transparent 70%),
+    radial-gradient(60% 50% at 0% 100%, rgba(#9caf88, 0.35) 0%, transparent 70%),
+    linear-gradient(180deg, #55705c 0%, #435a4a 55%, #364a3d 100%);
+}
+
+.auth-lang {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 5;
+}
+
+.auth-card {
+  width: min(420px, 100%);
+  background: rgba(#fffaf2, 0.97) !important;
+  border: 1px solid rgba($gold-bright, 0.8);
+  border-radius: 28px;
+  box-shadow: 0 30px 80px rgba(#000, 0.45);
+  animation: elegantPopIn 0.6s $ease-luxe both;
+}
+
+.auth-title {
+  font-family: $serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: $wine;
+  line-height: 1.1;
+}
+
+.lookup-page {
+  align-items: flex-start;
+
+  .lookup-inner {
+    width: min(560px, 100%);
+    padding-top: 30px;
+    color: $sidebar-text;
+    --mantine-color-dimmed: #{$sidebar-dim};
+  }
+
+  .lookup-title {
+    font-family: $serif;
+    font-size: 38px;
+    font-weight: 700;
+    line-height: 1.1;
+    background: linear-gradient(180deg, #fbeccb 0%, $gold-bright 70%, $gold 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .lookup-card {
+    background: rgba(#fffaf2, 0.97) !important;
+    border: 1px solid rgba($gold-bright, 0.8);
+    color: $cocoa;
+    --mantine-color-dimmed: #{$cocoa-light};
+  }
+
+  .lookup-match {
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid $gold-pale;
+    background: #fff;
+
+    &:hover { border-color: $gold-bright; }
+  }
+
+  .lookup-table {
+    font-family: $serif;
+    font-size: 44px;
+    font-weight: 700;
+    color: var(--brand, $wine);
+    line-height: 1.1;
+    text-align: center;
+  }
+
+  .lookup-plan {
+    width: 100%;
+    height: auto;
+    max-height: 60vh;
+    border-radius: 16px;
+    border: 1px solid $gold-pale;
+  }
+}
+
+// ---------- Dashboard ----------
+.dashboard {
+  min-height: 100vh;
+  background:
+    radial-gradient(70% 40% at 100% 0%, rgba($rose-light, 0.35) 0%, transparent 70%),
+    linear-gradient(180deg, #fffaf2 0%, #f6ecdc 100%);
+
+  .dashboard-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 24px;
+    color: $sidebar-text;
+    background: linear-gradient(90deg, #55705c 0%, #435a4a 100%);
+    border-bottom: 1px solid rgba($gold-bright, 0.6);
+    box-shadow: 0 8px 30px rgba($wine-deep, 0.3);
+    --mantine-color-dimmed: #{$sidebar-dim};
+  }
+
+  .dashboard-lang {
+    background: rgba(#000, 0.28);
+    border: 1px solid rgba($gold-bright, 0.25);
+
+    .mantine-SegmentedControl-indicator { background: linear-gradient(135deg, $gold-light 0%, $gold-bright 100%); }
+    .mantine-SegmentedControl-label { color: $sidebar-dim; &[data-active] { color: $wine-deep; } }
+  }
+
+  .dashboard-venue {
+    font-family: $serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: $gold-light;
+    line-height: 1.1;
+  }
+
+  .dashboard-title {
+    font-family: $serif;
+    font-size: 40px;
+    color: $wine;
+  }
+
+  .dashboard-section {
+    font-family: $serif;
+    font-size: 22px;
+    color: $wine;
+  }
+
+  .event-card {
+    cursor: pointer;
+    border: 1px solid $gold-pale;
+    background:
+      radial-gradient(120% 80% at 100% 0%, rgba($rose-light, 0.25) 0%, transparent 60%),
+      #fff;
+    box-shadow: 0 10px 26px rgba($wine-deep, 0.08);
+    transition: transform 0.3s $ease-luxe, box-shadow 0.3s, border-color 0.3s;
+
+    &:hover {
+      transform: translateY(-3px);
+      border-color: $gold-bright;
+      box-shadow: 0 18px 40px rgba($wine-deep, 0.16);
+    }
+
+    &.past { opacity: 0.75; }
+  }
+
+  .event-card-title {
+    font-family: $serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: $wine;
+    line-height: 1.1;
+  }
+
+  .event-empty {
+    border: 1px dashed $gold-bright;
+    background: rgba(#fff, 0.7);
+  }
+
+  .hall-empty-title {
+    font-family: $serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: $wine;
+  }
+
+  .template-badge { text-transform: none; }
+}
+
+.share-card {
+  border: 1px solid $gold-pale;
+  background: #fffdf8;
+}
+
+.share-qr {
+  border: 1px solid $gold-pale;
+  padding: 6px;
+  background: #fff;
+}
+
+.logo-preview {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: #fffaf2;
+  border: 1px solid $gold-pale;
+}
+
+.sidebar .sidebar-logo {
+  filter: drop-shadow(0 4px 12px rgba(#000, 0.3));
+}
+
+// ---------- Hall plan (SVG: print & QR page) ----------
+.hall-plan-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+
+  .plan-el {
+    fill: #f4ece0;
+    stroke: #8a7a66;
+    stroke-width: 1.5;
+  }
+
+  .plan-el-stage { fill: #6d2b3b; stroke: $gold-deep; }
+  .plan-el-dance { fill: #ecd6aa; stroke: $gold; }
+  .plan-el-dj { fill: #3a2a30; }
+  .plan-el-bar { fill: #7a4a2f; }
+  .plan-el-entrance { fill: #fff; stroke-dasharray: 6 4; }
+  .plan-el-column { fill: #d9cfbf; }
+
+  .plan-el-label {
+    text-anchor: middle;
+    dominant-baseline: central;
+    font-family: $serif;
+    font-weight: 700;
+    fill: $wine;
+  }
+
+  .plan-el-stage + .plan-el-label,
+  .plan-el-dj + .plan-el-label,
+  .plan-el-bar + .plan-el-label { fill: #f7e3c4; }
+
+  .plan-table-shape {
+    fill: #fff;
+    stroke: $gold;
+    stroke-width: 2.5;
+
+    &.head { fill: #f5dfae; stroke: $gold-deep; }
+  }
+
+  .plan-chair {
+    fill: #e9d3a4;
+    stroke: #fff;
+    stroke-width: 1.5;
+  }
+
+  .plan-table-number {
+    text-anchor: middle;
+    dominant-baseline: central;
+    font-family: $serif;
+    font-weight: 700;
+    fill: $wine;
+  }
+
+  .plan-table-name {
+    text-anchor: middle;
+    dominant-baseline: central;
+    fill: $cocoa-light;
+    font-weight: 600;
+  }
+
+  .plan-table.dimmed { opacity: 0.35; }
+
+  .plan-table.highlight {
+    .plan-table-shape {
+      fill: color-mix(in srgb, var(--brand, #{$rose}) 18%, #fff);
+      stroke: var(--brand, #{$rose});
+      stroke-width: 5;
+    }
+
+    .plan-table-number { fill: var(--brand, #{$rose}); }
+  }
+}
+
+// ---------- Print ----------
+.print-root { display: none; }
+
+@media print {
+  @page { margin: 12mm; }
+
+  body > *:not(.print-root) { display: none !important; }
+
+  .print-root {
+    display: block;
+    color: #222;
+    font-family: 'Montserrat', 'Noto Sans Armenian', sans-serif;
+  }
+
+  .print-page {
+    page-break-after: always;
+    break-after: page;
+  }
+
+  .print-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 8px;
+    margin-bottom: 14px;
+    border-bottom: 2px solid var(--brand);
+
+    .print-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      color: var(--brand);
+
+      img { max-height: 42px; max-width: 120px; }
+    }
+
+    h1 {
+      margin: 0;
+      font-family: $serif;
+      font-size: 26px;
+      color: var(--brand);
+      text-align: right;
+    }
+
+    p { margin: 0; font-size: 12px; color: #666; text-align: right; }
+  }
+
+  .print-plan {
+    max-height: 165mm;
+    border: 1px solid #ddd;
+  }
+
+  .print-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 8px;
+    font-size: 12px;
+
+    i {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      vertical-align: middle;
+    }
+  }
+
+  .print-table-grid {
+    columns: 2;
+    column-gap: 14px;
+  }
+
+  .print-table-card {
+    break-inside: avoid;
+    margin-bottom: 12px;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+
+    h3 {
+      display: flex;
+      justify-content: space-between;
+      margin: 0 0 4px;
+      font-family: $serif;
+      font-size: 18px;
+      color: var(--brand);
+
+      small { font-family: sans-serif; font-size: 11px; color: #888; }
+    }
+
+    ol {
+      margin: 0;
+      padding-left: 22px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    li.empty { color: #bbb; }
+
+    em {
+      display: block;
+      font-size: 10px;
+      color: #a0522d;
+    }
+  }
+
+  .print-alphabet {
+    columns: 3;
+    column-gap: 18px;
+    font-size: 12px;
+  }
+
+  .print-alpha-row {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    break-inside: avoid;
+    line-height: 1.7;
+
+    i { flex: 1; border-bottom: 1px dotted #bbb; }
+    b { color: var(--brand); white-space: nowrap; }
+  }
+
+  .print-cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .print-card {
+    height: 128mm;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    break-inside: avoid;
+    border-bottom: 1px dashed #ccc;
+
+    &:nth-child(2n) { break-after: page; }
+  }
+
+  .print-card-inner {
+    text-align: center;
+
+    img { max-height: 40px; margin-bottom: 8px; }
+  }
+
+  .print-card-number {
+    font-family: $serif;
+    font-size: 150px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--brand);
+  }
+
+  .print-card-name {
+    font-family: $serif;
+    font-size: 30px;
+    color: #333;
+  }
+
+  .print-card-event {
+    margin-top: 10px;
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #999;
+  }
+
+  .print-kitchen {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 4px 6px;
+      text-align: center;
+    }
+
+    th { background: #f3ede4; }
+    td:first-child, th:first-child { text-align: left; white-space: nowrap; }
+    td.notes { text-align: left; font-size: 10px; color: #555; }
+    td.hot { font-weight: 700; color: #a0522d; }
+    tfoot td { font-weight: 700; background: #faf6ef; }
+  }
+
+  .print-warning { margin-top: 10px; color: #b00020; font-weight: 600; font-size: 12px; }
+  .print-muted { color: #777; font-size: 12px; }
+
+  .print-qr {
+    text-align: center;
+    padding-top: 20mm;
+
+    .print-qr-logo { max-height: 60px; }
+
+    h1 {
+      font-family: $serif;
+      font-size: 44px;
+      color: var(--brand);
+      margin: 10px 0 4px;
+    }
+
+    h2 { font-family: $serif; font-size: 28px; color: #333; }
+    p { font-size: 16px; color: #555; }
+
+    .print-qr-code {
+      width: 110mm;
+      height: 110mm;
+      margin: 10mm auto;
+      display: block;
+    }
+  }
+}
+// ---------- Tabbed sidebar ----------
+.sidebar {
+  .sidebar-layout {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-tabs {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-tab-scroll {
+    flex: 1;
+    min-height: 0;
+  }
+
+  .sidebar-logo-box {
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    background: rgba(#fff, 0.06);
+    border: 1px solid rgba($gold-bright, 0.3);
+  }
+
+  .stats-strip {
+    padding: 8px 10px;
+    border-radius: 12px;
+    background: rgba(#fff, 0.05);
+    border: 1px solid rgba($gold-bright, 0.25);
+
+    .stat-value {
+      font-size: 20px;
+    }
+
+    .stats-progress {
+      background: rgba(#fff, 0.1);
+    }
+  }
+
+  .save-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #b9d79f;
+    background: rgba(#b9d79f, 0.1);
+    border: 1px solid rgba(#b9d79f, 0.3);
+    transition: background 0.2s;
+
+    &:hover { background: rgba(#fff, 0.1); }
+    &.dirty, &.saving { color: #f4a9bb; background: rgba(#f4a9bb, 0.1); border-color: rgba(#f4a9bb, 0.3); }
+    &.offline, &.conflict { color: #ff9b8a; background: rgba(#ff9b8a, 0.1); border-color: rgba(#ff9b8a, 0.35); }
+    &.loading { color: $sidebar-dim; }
+
+    .spin { animation: spin 1s linear infinite; }
+  }
+
+  .mantine-Tabs-list {
+    gap: 4px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid rgba($gold-bright, 0.2);
+  }
+
+  .mantine-Tabs-tab {
+    color: $sidebar-dim;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 6px 8px;
+
+    &:hover:not([data-active]) { background: rgba(#fff, 0.07); }
+
+    &[data-active] {
+      color: $wine-deep;
+      background: linear-gradient(135deg, $gold-light 0%, $gold-bright 100%);
+    }
+  }
+
+  .shape-option {
+    min-height: 64px;
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.sidebar {
+  .lang-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    color: $sidebar-dim;
+    border: 1px solid rgba($gold-bright, 0.3);
+    background: rgba(#fff, 0.05);
+
+    &:hover { color: $gold-light; background: rgba(#fff, 0.1); }
+  }
+
+  .sidebar-danger {
+    opacity: 0.85;
+
+    &:hover { opacity: 1; }
+  }
+
+  .sidebar-footer {
+    flex-shrink: 0;
+    padding: 10px 16px 14px;
+    border-top: 1px solid rgba($gold-bright, 0.2);
+    background: rgba(#000, 0.15);
+  }
+}

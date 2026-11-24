@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <!-- Soft marble veining -->
+    <filter id="marble" x="0" y="0" width="100%" height="100%">
+      <!-- Thin veins: keep only the low valleys of a turbulence field -->
+      <feTurbulence type="turbulence" baseFrequency="0.0022 0.0055" numOctaves="6" seed="23" result="veinNoise"/>
+      <feColorMatrix in="veinNoise" type="matrix" result="veins"
+        values="0 0 0 0 0.66
+                0 0 0 0 0.57
+                0 0 0 0 0.48
+                -7 0 0 0 0.95"/>
+      <!-- Very soft cloudy depth -->
+      <feTurbulence type="fractalNoise" baseFrequency="0.006" numOctaves="3" seed="5" result="cloudNoise"/>
+      <feColorMatrix in="cloudNoise" type="matrix" result="clouds"
+        values="0 0 0 0 0.85
+                0 0 0 0 0.79
+                0 0 0 0 0.71
+                0.9 0 0 0 -0.35"/>
+      <feMerge>
+        <feMergeNode in="clouds"/>
+        <feMergeNode in="veins"/>
+      </feMerge>
+    </filter>
+
+    <filter id="softGrain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="3"/>
+      <feColorMatrix type="matrix"
+        values="0 0 0 0 0.5
+                0 0 0 0 0.45
+                0 0 0 0 0.4
+                0 0 0 0.05 0"/>
+    </filter>
+
+    <!-- Large marble tiles with small taupe cabochons -->
+    <pattern id="tiles" width="125" height="125" patternUnits="userSpaceOnUse">
+      <rect width="125" height="125" fill="none" stroke="#CFB487" stroke-width="1.5"/>
+      <g fill="#B98E55" stroke="#8E6533" stroke-width="0.9">
+        <path d="M0 -10 L10 0 L0 10 L-10 0Z"/>
+        <path d="M125 -10 L135 0 L125 10 L115 0Z"/>
+        <path d="M0 115 L10 125 L0 135 L-10 125Z"/>
+        <path d="M125 115 L135 125 L125 135 L115 125Z"/>
+      </g>
+    </pattern>
+
+    <!-- Herringbone parquet for the dance floor -->
+    <pattern id="parquet" width="48" height="48" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="48" height="48" fill="#DCBB89"/>
+      <rect x="0" y="0" width="24" height="48" fill="#CFA970"/>
+      <path d="M0 0H48M0 24H24M24 12H48M24 36H48M24 0V48" stroke="#A97C45" stroke-width="1"/>
+    </pattern>
+
+    <radialGradient id="light" cx="50%" cy="45%" r="70%">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.55"/>
+      <stop offset="0.55" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="1" stop-color="#4A1F2B" stop-opacity="0.32"/>
+    </radialGradient>
+
+    <linearGradient id="goldLine" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#E6CB95"/>
+      <stop offset="0.5" stop-color="#C29B5F"/>
+      <stop offset="1" stop-color="#9C7A45"/>
+    </linearGradient>
+
+    <!-- One petal of the compass medallion -->
+    <path id="petal" d="M0 0 C 18 -40, 18 -90, 0 -130 C -18 -90, -18 -40, 0 0Z"/>
+    <path id="leaf" d="M0 -150 C 10 -170, 10 -190, 0 -205 C -10 -190, -10 -170, 0 -150Z"/>
+
+    <!-- Corner flourish -->
+    <g id="corner">
+      <path d="M0 60 C 0 25, 25 0, 60 0" fill="none" stroke="url(#goldLine)" stroke-width="2"/>
+      <path d="M12 72 C 12 36, 36 12, 72 12" fill="none" stroke="#C9A469" stroke-width="1" opacity="0.7"/>
+      <circle cx="18" cy="18" r="5" fill="#B24F66"/>
+      <path d="M30 6 C 40 -4, 52 2, 50 12 C 44 10, 36 10, 30 6Z" fill="#8FAA78"/>
+      <path d="M6 30 C -4 40, 2 52, 12 50 C 10 44, 10 36, 6 30Z" fill="#8FAA78"/>
+    </g>
+  </defs>
+
+  <!-- Base marble -->
+  <rect width="1600" height="1000" fill="#EFE1C8"/>
+  <rect width="1600" height="1000" filter="url(#marble)" opacity="0.85"/>
+  <rect width="1600" height="1000" fill="url(#tiles)"/>
+
+  <!-- Walnut inlay border with gold pinstripes -->
+  <rect x="28" y="28" width="1544" height="944" fill="none" stroke="#5E3B2A" stroke-width="18"/>
+  <rect x="18" y="18" width="1564" height="964" fill="none" stroke="url(#goldLine)" stroke-width="2"/>
+  <rect x="44" y="44" width="1512" height="912" fill="none" stroke="url(#goldLine)" stroke-width="2"/>
+  <rect x="56" y="56" width="1488" height="888" fill="none" stroke="#B8873B" stroke-width="1.2" stroke-dasharray="2 8"/>
+
+  <!-- Corners -->
+  <use href="#corner" transform="translate(64 64)"/>
+  <use href="#corner" transform="translate(1536 64) scale(-1 1)"/>
+  <use href="#corner" transform="translate(64 936) scale(1 -1)"/>
+  <use href="#corner" transform="translate(1536 936) scale(-1 -1)"/>
+
+  <!-- Central dance floor: herringbone parquet inside an oval -->
+  <g transform="translate(800 520)">
+    <ellipse rx="300" ry="215" fill="url(#parquet)" opacity="0.9"/>
+    <ellipse rx="300" ry="215" fill="none" stroke="#5E3B2A" stroke-width="8"/>
+    <ellipse rx="312" ry="227" fill="none" stroke="url(#goldLine)" stroke-width="2" opacity="0.8"/>
+    <ellipse rx="288" ry="203" fill="none" stroke="url(#goldLine)" stroke-width="1.2" opacity="0.7"/>
+
+    <!-- Compass-rose medallion -->
+    <g>
+      <circle r="150" fill="#FBF3E2" opacity="0.92"/>
+      <circle r="150" fill="none" stroke="url(#goldLine)" stroke-width="2.5"/>
+      <circle r="138" fill="none" stroke="#C9A469" stroke-width="1" stroke-dasharray="3 6"/>
+      <g fill="#E2BB6D" stroke="#9C6F2A" stroke-width="1.4">
+        <use href="#petal" transform="rotate(0)"/>
+        <use href="#petal" transform="rotate(45)"/>
+        <use href="#petal" transform="rotate(90)"/>
+        <use href="#petal" transform="rotate(135)"/>
+        <use href="#petal" transform="rotate(180)"/>
+        <use href="#petal" transform="rotate(225)"/>
+        <use href="#petal" transform="rotate(270)"/>
+        <use href="#petal" transform="rotate(315)"/>
+      </g>
+      <g fill="#EFB8C5" stroke="#B24F66" stroke-width="1.2" transform="scale(0.62)">
+        <use href="#petal" transform="rotate(22.5)"/>
+        <use href="#petal" transform="rotate(67.5)"/>
+        <use href="#petal" transform="rotate(112.5)"/>
+        <use href="#petal" transform="rotate(157.5)"/>
+        <use href="#petal" transform="rotate(202.5)"/>
+        <use href="#petal" transform="rotate(247.5)"/>
+        <use href="#petal" transform="rotate(292.5)"/>
+        <use href="#petal" transform="rotate(337.5)"/>
+      </g>
+      <g fill="#8FAA78">
+        <use href="#leaf" transform="rotate(0) scale(0.9)"/>
+        <use href="#leaf" transform="rotate(90) scale(0.9)"/>
+        <use href="#leaf" transform="rotate(180) scale(0.9)"/>
+        <use href="#leaf" transform="rotate(270) scale(0.9)"/>
+      </g>
+      <circle r="26" fill="#FBF6EE" stroke="url(#goldLine)" stroke-width="2.5"/>
+      <circle r="10" fill="#B24F66"/>
+    </g>
+  </g>
+
+  <!-- Gentle chandelier light and vignette -->
+  <rect width="1600" height="1000" fill="url(#light)"/>
+  <rect width="1600" height="1000" filter="url(#softGrain)"/>
+</svg>
