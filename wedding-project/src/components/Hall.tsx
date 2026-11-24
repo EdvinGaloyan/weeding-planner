@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { Loader, Paper, Stack, Text } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
 import TableItem from './TableItem';
@@ -14,6 +14,8 @@ interface HallProps {
     store: HallStore;
     viewportRef: React.RefObject<HTMLDivElement | null>;
     zoom: number;
+    /** Screen width hidden by open side panels (the drawing fills only the rest). */
+    coveredWidth: number;
     readOnly: boolean;
     isArranging: boolean;
     isLoading: boolean;
@@ -60,6 +62,7 @@ function Hall({
     store,
     viewportRef,
     zoom,
+    coveredWidth,
     readOnly,
     isArranging,
     isLoading,
@@ -95,7 +98,7 @@ function Hall({
         return { right: right + EDGE, bottom: bottom + EDGE };
     }, [tables, elements]);
 
-    const canvasWidth = Math.max(viewport.width / zoom, content.right);
+    const canvasWidth = Math.max(Math.max(200, viewport.width - coveredWidth) / zoom, content.right);
     const canvasHeight = Math.max(viewport.height / zoom, content.bottom);
     const isEmpty = tables.length === 0 && elements.length === 0;
 
@@ -182,4 +185,22 @@ function Hall({
     );
 }
 
-export default Hall;
+/**
+ * Re-render the hall only when what it draws changes. Toggling a side panel re-renders the
+ * editor, and re-drawing every table and chair then made the slide animation stutter.
+ * Callback props are left out on purpose: they only set editor state or read data that comes
+ * from `hall`, which is compared here.
+ */
+function sameHallProps(prev: HallProps, next: HallProps) {
+    return (
+        prev.hall === next.hall &&
+        prev.zoom === next.zoom &&
+        prev.coveredWidth === next.coveredWidth &&
+        prev.readOnly === next.readOnly &&
+        prev.isArranging === next.isArranging &&
+        prev.isLoading === next.isLoading &&
+        prev.matchIds === next.matchIds
+    );
+}
+
+export default memo(Hall, sameHallProps);

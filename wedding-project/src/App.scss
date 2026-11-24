@@ -35,12 +35,15 @@ $ease-luxe: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 // ---------- Sidebar (dark velvet) ----------
+// Side panels float over the hall and only slide (transform): the hall never changes size,
+// so nothing has to be laid out or repainted while they move.
 .sidebar {
-  position: relative;
+  position: absolute;
+  left: 0;
+  top: 0;
   z-index: 20;
   width: $sidebar-width;
   height: 100vh;
-  flex-shrink: 0;
   color: $sidebar-text;
   background:
     radial-gradient(130% 32% at 50% 0%, rgba($gold-bright, 0.28) 0%, transparent 70%),
@@ -48,7 +51,7 @@ $ease-luxe: cubic-bezier(0.16, 1, 0.3, 1);
     linear-gradient(180deg, #55705c 0%, #435a4a 55%, #364a3d 100%);
   border-right: 1px solid rgba($gold-bright, 0.45);
   box-shadow: inset -6px 0 0 -5px rgba($gold-bright, 0.25), 10px 0 40px rgba($wine-deep, 0.45);
-  transition: transform 0.35s $ease-luxe, margin-left 0s linear 0s;
+  transition: transform 0.35s $ease-luxe;
   will-change: transform;
 
   // Re-skin Mantine components for the dark surface
@@ -62,9 +65,7 @@ $ease-luxe: cubic-bezier(0.16, 1, 0.3, 1);
   --mantine-color-placeholder: #{rgba($sidebar-text, 0.45)};
 
   .sidebar-closed & {
-    margin-left: -$sidebar-width;
     transform: translateX(-100%);
-    transition: transform 0.35s $ease-luxe, margin-left 0s linear 0.35s;
   }
 
   .mantine-InputWrapper-label {
@@ -329,28 +330,27 @@ $ease-luxe: cubic-bezier(0.16, 1, 0.3, 1);
 .sidebar-toggle-btn {
   position: absolute !important;
   top: 18px;
-  left: calc(#{$sidebar-width} + 14px);
+  left: 14px;
   z-index: 30;
   background: linear-gradient(135deg, #55705c 0%, #435a4a 100%) !important;
   border-color: rgba($gold-bright, 0.6) !important;
   color: $gold-light !important;
   box-shadow: 0 6px 18px rgba($wine-deep, 0.35);
-  transition: left 0.35s $ease-luxe, color 0.2s;
+  transition: transform 0.35s $ease-luxe, color 0.2s;
 
   &:hover {
     color: #fff !important;
   }
 
-  .sidebar-closed & {
-    left: 14px;
+  .sidebar-open & {
+    transform: translateX($sidebar-width);
   }
 }
 
 // ---------- Hall ----------
 .hall-area {
-  flex: 1;
-  min-width: 0;
-  position: relative;
+  position: absolute;
+  inset: 0;
   display: flex;
 }
 
@@ -362,8 +362,22 @@ $ease-luxe: cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: inset 0 0 120px rgba($wine-deep, 0.22); // warm vignette so the tables stand out
 }
 
+// The whole drawing slides right when the menu opens (GPU only, no repaint of the tables)
 .hall-sizer {
   position: relative;
+  box-sizing: content-box;
+  transition: transform 0.35s $ease-luxe;
+  will-change: transform;
+  @media (min-width: 901px) {
+    .sidebar-open & {
+      transform: translateX($sidebar-width);
+    }
+
+    // Extra scroll room so nothing stays hidden under the guest panel
+    .guests-open & {
+      padding-right: 340px;
+    }
+  }
 }
 
 .hall {
@@ -383,6 +397,13 @@ $ease-luxe: cubic-bezier(0.16, 1, 0.3, 1);
   top: 14px;
   right: 16px;
   z-index: 40;
+  transition: transform 0.35s $ease-luxe;
+
+  @media (min-width: 901px) {
+    .guests-open & {
+      transform: translateX(-340px);
+    }
+  }
   background: rgba(#fffaf2, 0.94) !important;
   backdrop-filter: blur(8px);
   border: 1px solid rgba($gold-bright, 0.7);
@@ -966,24 +987,24 @@ $ease-luxe: cubic-bezier(0.16, 1, 0.3, 1);
 
 // ---------- Guest panel ----------
 .guest-panel {
-  position: relative;
+  position: absolute;
+  right: 0;
+  top: 0;
   z-index: 25;
   width: 340px;
-  flex-shrink: 0;
   height: 100vh;
   display: flex;
   flex-direction: column;
   background: #fffaf2;
   border-left: 1px solid rgba($gold-bright, 0.6);
   box-shadow: -10px 0 40px rgba($wine-deep, 0.25);
-  transition: transform 0.35s $ease-luxe, margin-right 0s linear 0s, visibility 0s 0s;
+  transition: transform 0.35s $ease-luxe, visibility 0s 0s;
   will-change: transform;
 
   &.closed {
-    margin-right: -340px;
     transform: translateX(100%);
     visibility: hidden;
-    transition: transform 0.35s $ease-luxe, margin-right 0s linear 0.35s, visibility 0s 0.35s;
+    transition: transform 0.35s $ease-luxe, visibility 0s 0.35s;
   }
 
   .guest-panel-header {
@@ -1121,15 +1142,8 @@ $ease-luxe: cubic-bezier(0.16, 1, 0.3, 1);
 
 @media (max-width: 900px) {
   .sidebar {
-    position: absolute;
-    left: 0;
-    top: 0;
     z-index: 50;
     width: min(#{$sidebar-width}, calc(100vw - 48px));
-  }
-
-  .sidebar-closed .sidebar {
-    margin-left: calc(-1 * min(#{$sidebar-width}, calc(100vw - 48px)));
   }
 
   .sidebar-open .sidebar-backdrop {
@@ -1141,16 +1155,12 @@ $ease-luxe: cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .sidebar-toggle-btn {
-    left: 14px;
     z-index: 55;
 
-    .sidebar-open & { left: calc(min(#{$sidebar-width}, calc(100vw - 48px)) + 6px); }
+    .sidebar-open & { transform: translateX(calc(min(#{$sidebar-width}, calc(100vw - 48px)) - 8px)); }
   }
 
   .guest-panel {
-    position: absolute;
-    right: 0;
-    top: 0;
     z-index: 48;
     width: min(360px, 100vw);
   }

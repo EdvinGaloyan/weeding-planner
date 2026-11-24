@@ -54,6 +54,9 @@ export interface EditorProps {
 }
 
 const ARRANGE_ANIMATION_MS = 900;
+/** Must match $sidebar-width and the guest panel width in App.scss. */
+const SIDEBAR_WIDTH = 330;
+const GUEST_PANEL_WIDTH = 340;
 const ZOOM_MIN = 0.3;
 const ZOOM_MAX = 1.6;
 
@@ -131,14 +134,35 @@ function Editor({ store, mode, event, venue, onBack, onEditEvent, share, onSaveT
         return { right, bottom };
     }, [hall.elements, tables]);
 
+    /**
+     * The side panels float over the hall. On desktop the drawing is shifted right while the
+     * menu is open, and the guest panel covers the right edge — this is the part left visible.
+     */
+    const visibleWidth = useCallback(() => {
+        const viewport = viewportRef.current;
+        if (!viewport) return 0;
+        const left = !narrow && isSidebarOpen ? SIDEBAR_WIDTH : 0;
+        const right = !narrow && isGuestPanelOpen ? GUEST_PANEL_WIDTH : 0;
+        return Math.max(200, viewport.clientWidth - left - right);
+    }, [isGuestPanelOpen, isSidebarOpen, narrow]);
+
+    // The canvas size follows the panels only after their slide has finished, so the hall
+    // is not re-rendered in the middle of the animation.
+    const targetCovered = narrow ? 0 : (isSidebarOpen ? SIDEBAR_WIDTH : 0) + (isGuestPanelOpen ? GUEST_PANEL_WIDTH : 0);
+    const [coveredWidth, setCoveredWidth] = useState(targetCovered);
+    useEffect(() => {
+        const timer = window.setTimeout(() => setCoveredWidth(targetCovered), 400);
+        return () => window.clearTimeout(timer);
+    }, [targetCovered]);
+
     const fitToScreen = useCallback(() => {
         const viewport = viewportRef.current;
         const { right, bottom } = contentSize();
         if (!viewport || !right || !bottom) return setZoom(1);
-        const fit = Math.min(viewport.clientWidth / right, viewport.clientHeight / bottom, 1);
+        const fit = Math.min(visibleWidth() / right, viewport.clientHeight / bottom, 1);
         setZoom(Math.max(ZOOM_MIN, Math.round(fit * 100) / 100));
         viewport.scrollTo({ left: 0, top: 0 });
-    }, [contentSize]);
+    }, [contentSize, visibleWidth]);
 
     const changeZoom = (delta: number) => setZoom(z => Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, Math.round((z + delta) * 10) / 10)));
 
@@ -155,7 +179,7 @@ function Editor({ store, mode, event, venue, onBack, onEditEvent, share, onSaveT
         const viewport = viewportRef.current;
         if (!viewport) return { x: 300, y: 250 };
         return {
-            x: (viewport.scrollLeft + viewport.clientWidth / 2) / zoom,
+            x: (viewport.scrollLeft + visibleWidth() / 2) / zoom,
             y: (viewport.scrollTop + viewport.clientHeight / 2) / zoom,
         };
     };
@@ -225,7 +249,7 @@ function Editor({ store, mode, event, venue, onBack, onEditEvent, share, onSaveT
     const applyArrangement = (source: TableData[], layout: LayoutOrientation = orientation) => {
         const viewport = viewportRef.current;
         const arranged = viewport
-            ? arrangeTables(source, viewport.clientWidth / zoom, viewport.clientHeight / zoom, layout)
+            ? arrangeTables(source, visibleWidth() / zoom, viewport.clientHeight / zoom, layout)
             : source;
         window.clearTimeout(arrangeTimer.current);
         setIsArranging(true);
@@ -484,6 +508,7 @@ function Editor({ store, mode, event, venue, onBack, onEditEvent, share, onSaveT
                     store={store}
                     viewportRef={viewportRef}
                     zoom={zoom}
+                    coveredWidth={coveredWidth}
                     readOnly={readOnly}
                     isArranging={isArranging}
                     isLoading={store.status === 'loading' && tables.length === 0}

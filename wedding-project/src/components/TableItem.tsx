@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import Draggable from 'react-draggable';
 import { ActionIcon, Tooltip } from '@mantine/core';
 import {
@@ -311,4 +311,18 @@ function TableItem({
     );
 }
 
-export default TableItem;
+/** A table only re-renders when its own data, its guests or the view settings change. */
+function sameTableProps(prev: TableItemProps, next: TableItemProps) {
+    return (
+        prev.table === next.table &&
+        prev.index === next.index &&
+        prev.zoom === next.zoom &&
+        prev.readOnly === next.readOnly &&
+        prev.groupColors === next.groupColors &&
+        prev.matchIds === next.matchIds &&
+        prev.seats.length === next.seats.length &&
+        prev.seats.every((guest, i) => guest === next.seats[i])
+    );
+}
+
+export default memo(TableItem, sameTableProps);
