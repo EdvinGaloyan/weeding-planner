@@ -3,10 +3,9 @@ node_modules/
 dist/
 dist-ssr/
 
-# Private data — users, password hashes, guest names (never commit)
-wedding-backend/data/
-wedding-backend/hall_data.json
-wedding-backend/hall_data.backup.json
+# Private data — guest names, backups (never commit)
+wedding-backend/
+wedding-planner-*.json
 *.tmp
 
 # Secrets / local settings

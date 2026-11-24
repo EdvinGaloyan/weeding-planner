@@ -3,28 +3,25 @@
 Seating planner for wedding halls and planners: hall layout (tables, stage, dance floor…),
 guest list with groups and meals, drag-to-seat, print/PDF, Armenian / Russian / English.
 
-```
-wedding-project/   React + Vite + Mantine frontend
-wedding-backend/   Express backend (accounts, events, couple link, QR page)
-```
+The app lives in `wedding-project/` (React + Vite + Mantine). It needs no backend: all weddings,
+templates and settings are kept in the browser's localStorage. Use **Backup → Download / Import**
+on the dashboard to keep a copy or move the data to another browser.
 
 ## Run locally
 
 ```bash
-# backend → http://localhost:5000
-cd wedding-backend && npm install && node server.js
-
-# frontend → http://localhost:5173
-cd wedding-project && npm install && npx vite --port 5173
+cd wedding-project
+npm install
+npx vite --port 5173
 ```
 
-## Deploy (Vercel, no backend)
+## Deploy (Vercel)
 
-`vercel.json` builds `wedding-project/` as a static site. Without `VITE_API_URL` the app runs in
-**local mode**: all data is kept in the browser's localStorage (no login; couple link and QR page
-are hidden). Use **Backup → Download / Import** on the dashboard to keep or move the data.
+Vercel project settings: **Root Directory** `wedding-project`, **Framework Preset** Vite.
+Every push to `main` deploys automatically.
 
-Vercel project settings: Root Directory `./`, Framework Preset **Other**, no `VITE_API_URL`.
+## Backend (optional, not used now)
 
-To use the backend instead, deploy `wedding-backend/` somewhere with persistent storage and
-build the frontend with `VITE_API_URL=https://your-backend`.
+The frontend still contains the client for a backend server (accounts, couple share link,
+QR "find your table" page). It is only used when the app is built with `VITE_API_URL` set.
+The previous Express backend is in this repository's git history.

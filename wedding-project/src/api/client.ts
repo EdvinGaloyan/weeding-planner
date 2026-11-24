@@ -5,10 +5,9 @@ export const API_URL: string = import.meta.env.VITE_API_URL ?? 'http://localhost
 
 /**
  * Local mode = no backend: data lives in this browser's localStorage.
- * On by default for production builds without VITE_API_URL (e.g. Vercel), or forced with VITE_STORAGE=local.
+ * This is the default; set VITE_API_URL to use a backend server instead.
  */
-export const LOCAL_MODE: boolean =
-    import.meta.env.VITE_STORAGE === 'local' || (!import.meta.env.DEV && !import.meta.env.VITE_API_URL);
+export const LOCAL_MODE: boolean = !import.meta.env.VITE_API_URL;
 
 const TOKEN_KEY = 'auth-token';
 
